@@ -1,0 +1,40 @@
+---------------------------------------------  java------------------------------------------------------------
+
+
+class Solution {
+    public boolean hasAlternatingBits(int n) {
+        int currBit = n % 2;
+        n /= 2;
+
+        while (n > 0) {
+            if (currBit == n % 2) {
+                return false;
+            }
+
+            currBit = n % 2;
+            n /= 2;
+        }
+
+        return true;
+    }
+}
+=============================================================c solution ============================================================================#include <stdio.h>
+
+
+#include <stdbool.h>
+
+bool hasAlternatingBits(int n) {
+    int currBit = n % 2;   // get last bit
+    n /= 2;                // remove last bit
+
+    while (n > 0) {
+        if (currBit == n % 2) {
+            return false;  // same adjacent bits found
+        }
+
+        currBit = n % 2;   // update current bit
+        n /= 2;            // remove processed bit
+    }
+
+    return true;           // all bits alternate
+}
