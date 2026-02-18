@@ -1,0 +1,37 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+
+int popcount(int x) {
+    int count = 0;
+    while (x) {
+        count += x & 1;
+        x >>= 1;
+    }
+    return count;
+}
+
+char** readBinaryWatch(int turnedOn, int* returnSize) {
+    char** result = (char**)malloc(600 * sizeof(char*));
+    *returnSize = 0;
+
+    for (int HH = 0; HH <= 11; HH++) {
+        for (int MM = 0; MM <= 59; MM++) {
+
+            if (popcount(HH) + popcount(MM) == turnedOn) {
+                char buffer[6];
+
+                if (MM < 10)
+                    sprintf(buffer, "%d:0%d", HH, MM);
+                else
+                    sprintf(buffer, "%d:%d", HH, MM);
+
+                result[*returnSize] = (char*)malloc(strlen(buffer) + 1);
+                strcpy(result[*returnSize], buffer);
+                (*returnSize)++;
+            }
+        }
+    }
+    return result;
+}
