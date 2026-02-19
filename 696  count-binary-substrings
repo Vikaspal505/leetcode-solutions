@@ -1,0 +1,66 @@
+=====================================java=======================================================
+class Solution {
+    public int countBinarySubstrings(String s) {
+        int result = 0;
+
+        int prevCount = 0;
+        int currCount = 1;
+
+        for(int i = 1; i < s.length(); i++) {
+            if(s.charAt(i) == s.charAt(i-1)) {
+                currCount++;
+            } else {
+                result    += Math.min(prevCount, currCount);
+                prevCount = currCount;
+                currCount = 1;
+            }
+        }
+
+        return result + Math.min(prevCount, currCount);
+    }
+}
+
+
+-------------------------------------------------------c code ------------------------------------------------------------------------------------
+
+
+#include <stdio.h>
+#include <string.h>
+
+int min(int a, int b) {
+    return (a < b) ? a : b;
+}
+
+int countBinarySubstrings(char *s) {
+    int result = 0;
+
+    int prevCount = 0;
+    int currCount = 1;
+
+    int len = strlen(s);
+
+    for(int i = 1; i < len; i++) {
+        if(s[i] == s[i - 1]) {
+            currCount++;
+        } else {
+            result += min(prevCount, currCount);
+            prevCount = currCount;
+            currCount = 1;
+        }
+    }
+
+    return result + min(prevCount, currCount);
+}
+
+int main() {
+    char s[1000];
+
+    printf("Enter binary string: ");
+    scanf("%s", s);
+
+    int ans = countBinarySubstrings(s);
+
+    printf("Number of valid substrings: %d\n", ans);
+
+    return 0;
+}
