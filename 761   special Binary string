@@ -36,15 +36,10 @@ class Solution {
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
-// Comparator for descending order sorting
 int compare(const void *a, const void *b) {
     char *str1 = *(char **)a;
     char *str2 = *(char **)b;
-    return strcmp(str2, str1);  // reverse order
-}
-
-// Recursive function
+    return strcmp(str2, str1);  
 char* makeLargestSpecial(char* s) {
     int n = strlen(s);
     if (n == 0) {
@@ -52,7 +47,6 @@ char* makeLargestSpecial(char* s) {
         empty[0] = '\0';
         return empty;
     }
-
     char** specials = (char**)malloc(n * sizeof(char*));
     int count = 0, start = 0, specialCount = 0;
 
@@ -87,11 +81,7 @@ char* makeLargestSpecial(char* s) {
             start = i + 1;
         }
     }
-
-    // Sort in descending lexicographical order
     qsort(specials, specialCount, sizeof(char*), compare);
-
-    // Combine all strings
     int totalLength = 0;
     for (int i = 0; i < specialCount; i++)
         totalLength += strlen(specials[i]);
@@ -108,8 +98,6 @@ char* makeLargestSpecial(char* s) {
 
     return result;
 }
-
-// Example usage
 int main() {
     char s[] = "11011000";
     char* result = makeLargestSpecial(s);
