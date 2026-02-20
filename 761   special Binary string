@@ -1,0 +1,119 @@
+===========================================java============================================================================
+class Solution {
+    public String makeLargestSpecial(String s) {
+
+        List<String> specials = new ArrayList<>();
+        int count = 0;
+        int start = 0;
+
+        for (int i = 0; i < s.length(); i++) {
+            count += (s.charAt(i) == '1') ? 1 : -1;
+
+            if (count == 0) {
+                String inner = s.substring(start + 1, i);
+
+                String processed = "1" + makeLargestSpecial(inner) + "0";
+                specials.add(processed);
+
+                start = i + 1;
+            }
+        }
+
+        Collections.sort(specials, Collections.reverseOrder());
+
+
+        StringBuilder result = new StringBuilder();
+        for (String str : specials) {
+            result.append(str);
+        }
+
+        return result.toString();
+    }
+}
+
+---------------------------------------------------------c code ---------------------------------------------------------------
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+// Comparator for descending order sorting
+int compare(const void *a, const void *b) {
+    char *str1 = *(char **)a;
+    char *str2 = *(char **)b;
+    return strcmp(str2, str1);  // reverse order
+}
+
+// Recursive function
+char* makeLargestSpecial(char* s) {
+    int n = strlen(s);
+    if (n == 0) {
+        char* empty = (char*)malloc(1);
+        empty[0] = '\0';
+        return empty;
+    }
+
+    char** specials = (char**)malloc(n * sizeof(char*));
+    int count = 0, start = 0, specialCount = 0;
+
+    for (int i = 0; i < n; i++) {
+        if (s[i] == '1')
+            count++;
+        else
+            count--;
+
+        if (count == 0) {
+            int len = i - start - 1;
+
+            char* inner = (char*)malloc(len + 1);
+            strncpy(inner, s + start + 1, len);
+            inner[len] = '\0';
+
+            char* processedInner = makeLargestSpecial(inner);
+
+            int newLen = strlen(processedInner) + 2;
+            char* processed = (char*)malloc(newLen + 1);
+
+            processed[0] = '1';
+            strcpy(processed + 1, processedInner);
+            processed[newLen - 1] = '0';
+            processed[newLen] = '\0';
+
+            specials[specialCount++] = processed;
+
+            free(inner);
+            free(processedInner);
+
+            start = i + 1;
+        }
+    }
+
+    // Sort in descending lexicographical order
+    qsort(specials, specialCount, sizeof(char*), compare);
+
+    // Combine all strings
+    int totalLength = 0;
+    for (int i = 0; i < specialCount; i++)
+        totalLength += strlen(specials[i]);
+
+    char* result = (char*)malloc(totalLength + 1);
+    result[0] = '\0';
+
+    for (int i = 0; i < specialCount; i++) {
+        strcat(result, specials[i]);
+        free(specials[i]);
+    }
+
+    free(specials);
+
+    return result;
+}
+
+// Example usage
+int main() {
+    char s[] = "11011000";
+    char* result = makeLargestSpecial(s);
+    printf("%s\n", result);
+    free(result);
+    return 0;
+}
