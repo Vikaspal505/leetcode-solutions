@@ -1,0 +1,55 @@
+=======================================================java==================================
+class Solution {
+    public boolean hasAllCodes(String s, int k) {
+        if(s.length() < k)
+            return false;
+
+        int uniqueSub      = 1<<k;
+        HashSet<String> st = new HashSet<>();
+
+        for(int i = k; i <= s.length(); i++) {
+            String sub = s.substring(i-k, i);
+
+            if(!st.contains(sub)) {
+                st.add(sub);
+                uniqueSub--;
+            }
+
+            if(uniqueSub == 0)
+                return true;
+        }
+
+        return false;
+    }
+}
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++c +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdbool.h>
+bool hasAllCodes(char* s, int k) {
+    int n = strlen(s);
+    if(n < k)
+        return false;
+    int total = 1 << k;           
+    int count = total;
+    bool *seen = (bool*)calloc(total, sizeof(bool));
+    int mask = 0;
+    for(int i = 0; i < n; i++) {
+        mask = ((mask << 1) & (total - 1)) | (s[i] - '0');
+        if(i >= k - 1) {
+            if(!seen[mask]) {
+                seen[mask] = true;
+                count--;
+                if(count == 0) {
+                    free(seen);
+                    return true;
+                }
+            }
+        }
+    }
+    free(seen);
+    return false;
+}
+
