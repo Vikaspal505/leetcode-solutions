@@ -1,0 +1,46 @@
+======================================================java =======================================================================
+class Solution {
+
+    int solve(TreeNode root, int val) {
+
+        if (root == null) {
+            return 0;
+        }
+
+        val = (2 * val) + root.val;
+
+        // If leaf node
+        if (root.left == null && root.right == null) {
+            return val;
+        }
+
+        return solve(root.left, val) + solve(root.right, val);
+    }
+
+    public int sumRootToLeaf(TreeNode root) {
+        return solve(root, 0);
+    }
+}
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++c solution+++++++++++++++++++++++++++++++++++++++++++++++++++
+
+#include <stdio.h>
+#include <stdlib.h>
+struct TreeNode {
+    int val;
+    struct TreeNode *left;
+    struct TreeNode *right;
+};
+int solve(struct TreeNode* root, int val) {
+    if (root == NULL) {
+        return 0;
+    }
+    val = (2 * val) + root->val;
+    if (root->left == NULL && root->right == NULL) {
+        return val;
+    }
+
+    return solve(root->left, val) + solve(root->right, val);
+}
+int sumRootToLeaf(struct TreeNode* root) {
+    return solve(root, 0);
+}
