@@ -24,6 +24,7 @@ class Solution {
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++c solution+++++++++++++++++++++++++++++++++++++++++++++++++++
 
 #include <stdio.h>
+
 #include <stdlib.h>
 struct TreeNode {
     int val;
