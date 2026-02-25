@@ -1,0 +1,28 @@
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++c code+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+#include <stdlib.h>
+int countBits(int x) {
+    int count = 0;
+    while (x) {
+        count += x & 1;
+        x >>= 1;
+    }
+    return count;
+}
+int compare(const void* a, const void* b) {
+    int x = *(int*)a;
+    int y = *(int*)b;
+    int bitsX = countBits(x);
+    int bitsY = countBits(y);
+    
+    if (bitsX == bitsY)
+        return x - y;  
+    return bitsX - bitsY;
+}
+int* sortByBits(int* arr, int arrSize, int* returnSize) {
+    qsort(arr, arrSize, sizeof(int), compare);
+    *returnSize = arrSize;
+    return arr;
+}
+=================================================================JAVA CODE ================================================================================
+
