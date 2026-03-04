@@ -1,0 +1,28 @@
+class Solution {
+   
+    public int numSpecial(int[][] mat) {
+     
+        int rowCount = mat.length;
+        int colCount = mat[0].length;
+        int[] rowSums = new int[rowCount];
+        int[] colSums = new int[colCount];
+        for (int row = 0; row < rowCount; row++) {
+            for (int col = 0; col < colCount; col++) {
+                rowSums[row] += mat[row][col];
+                colSums[col] += mat[row][col];
+            }
+        }
+      
+        // Second pass: Count special positions
+        int specialCount = 0;
+        for (int row = 0; row < rowCount; row++) {
+            for (int col = 0; col < colCount; col++) {
+                if (mat[row][col] == 1 && rowSums[row] == 1 && colSums[col] == 1) {
+                    specialCount++;
+                }
+            }
+        }
+      
+        return specialCount;
+    }
+}
