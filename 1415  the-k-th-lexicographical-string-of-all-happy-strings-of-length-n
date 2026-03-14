@@ -1,0 +1,28 @@
+class Solution {
+    private List<String> happyStrings = new ArrayList<>();
+    private StringBuilder currentString = new StringBuilder();
+    private int targetLength;
+    private int targetIndex;
+    public String getHappyString(int n, int k) {
+        this.targetLength = n;
+        this.targetIndex = k;
+        generateHappyStrings();
+        return happyStrings.size() < k ? "" : happyStrings.get(k - 1);
+    }
+    private void generateHappyStrings() {
+        if (currentString.length() == targetLength) {
+            happyStrings.add(currentString.toString());
+            return;
+        }
+        if (happyStrings.size() >= targetIndex) {
+            return;
+        }
+        for (char character : "abc".toCharArray()) {
+            if (currentString.isEmpty() || currentString.charAt(currentString.length() - 1) != character) {
+                currentString.append(character);
+                generateHappyStrings();
+                currentString.deleteCharAt(currentString.length() - 1);
+            }
+        }
+    }
+}
