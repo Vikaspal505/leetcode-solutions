@@ -1,0 +1,52 @@
+class Solution {
+    public int[] getBiggestThree(int[][] grid) {
+        int rows = grid.length;
+        int cols = grid[0].length;
+        int[][] diagonalSumDownRight = new int[rows + 1][cols + 2];
+        int[][] diagonalSumDownLeft = new int[rows + 1][cols + 2];
+        for (int i = 1; i <= rows; ++i) {
+            for (int j = 1; j <= cols; ++j) {
+                diagonalSumDownRight[i][j] = diagonalSumDownRight[i - 1][j - 1] + grid[i - 1][j - 1];
+                diagonalSumDownLeft[i][j] = diagonalSumDownLeft[i - 1][j + 1] + grid[i - 1][j - 1];
+            }
+        }
+        TreeSet<Integer> uniqueSums = new TreeSet<>();
+        for (int centerRow = 1; centerRow <= rows; ++centerRow) {
+            for (int centerCol = 1; centerCol <= cols; ++centerCol) {
+                int maxRadius = Math.min(
+                    Math.min(centerRow - 1, rows - centerRow), 
+                    Math.min(centerCol - 1, cols - centerCol)
+                );
+                uniqueSums.add(grid[centerRow - 1][centerCol - 1]);
+                for (int radius = 1; radius <= maxRadius; ++radius) {
+                   
+                    int topRightEdge = diagonalSumDownRight[centerRow + radius][centerCol] 
+                                     - diagonalSumDownRight[centerRow][centerCol - radius];
+                  
+                    int bottomRightEdge = diagonalSumDownRight[centerRow][centerCol + radius] 
+                                        - diagonalSumDownRight[centerRow - radius][centerCol];
+                   
+                    int topLeftEdge = diagonalSumDownLeft[centerRow][centerCol - radius] 
+                                    - diagonalSumDownLeft[centerRow - radius][centerCol];
+                    
+                    int bottomLeftEdge = diagonalSumDownLeft[centerRow + radius][centerCol] 
+                                       - diagonalSumDownLeft[centerRow][centerCol + radius];
+                    int rhombusSum = topRightEdge + bottomRightEdge + topLeftEdge + bottomLeftEdge 
+                                   - grid[centerRow + radius - 1][centerCol - 1]  
+                                   + grid[centerRow - radius - 1][centerCol - 1];  
+                  
+                    uniqueSums.add(rhombusSum);
+                }
+              
+                while (uniqueSums.size() > 3) {
+                    uniqueSums.pollFirst();
+                }
+            }
+        }
+        int[] result = new int[uniqueSums.size()];
+        for (int i = 0; i < result.length; ++i) {
+            result[i] = uniqueSums.pollLast();  
+        }
+        return result;
+    }
+}
