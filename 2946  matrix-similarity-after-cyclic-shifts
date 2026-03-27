@@ -1,0 +1,25 @@
+class Solution {
+    public boolean areSimilar(int[][] mat, int k) {
+        int rowCount = mat.length;
+        int columnCount = mat[0].length;
+        k = k % columnCount;
+        for (int row = 0; row < rowCount; row++) {
+            for (int col = 0; col < columnCount; col++) {
+              
+                if (row % 2 == 1) {
+                    int shiftedPosition = (col + k) % columnCount;
+                    if (mat[row][col] != mat[row][shiftedPosition]) {
+                        return false;
+                    }
+                }
+                if (row % 2 == 0) {
+                    int shiftedPosition = (col - k + columnCount) % columnCount;
+                    if (mat[row][col] != mat[row][shiftedPosition]) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
+}
