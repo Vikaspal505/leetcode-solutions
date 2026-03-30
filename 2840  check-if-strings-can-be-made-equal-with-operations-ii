@@ -1,0 +1,21 @@
+class Solution {
+    public boolean checkStrings(String s1, String s2) {
+        int[][] frequencyDiff = new int[2][26];
+        for (int i = 0; i < s1.length(); i++) {
+            int parityIndex = i & 1;
+            int charIndexS1 = s1.charAt(i) - 'a';
+            int charIndexS2 = s2.charAt(i) - 'a';
+            frequencyDiff[parityIndex][charIndexS1]++;
+            frequencyDiff[parityIndex][charIndexS2]--;
+        }
+        for (int charIndex = 0; charIndex < 26; charIndex++) {
+            if (frequencyDiff[0][charIndex] != 0) {
+                return false;
+            }
+            if (frequencyDiff[1][charIndex] != 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+}
