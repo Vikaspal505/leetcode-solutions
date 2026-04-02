@@ -1,0 +1,36 @@
+class Solution {
+    private Integer[][][] dp;
+    private int[][] coins;
+    private int rows;
+    private int cols;
+    public int maximumAmount(int[][] coins) {
+        this.rows = coins.length;
+        this.cols = coins[0].length;
+        this.coins = coins;
+        this.dp = new Integer[rows][cols][3];
+        return dfs(0, 0, 2);
+    }
+    private int dfs(int row, int col, int neutralizationsLeft) {
+        if (row >= rows || col >= cols) {
+            return Integer.MIN_VALUE / 2;  
+        }
+        if (dp[row][col][neutralizationsLeft] != null) {
+            return dp[row][col][neutralizationsLeft];
+        }
+        if (row == rows - 1 && col == cols - 1) {
+            return neutralizationsLeft > 0 ? Math.max(0, coins[row][col]) : coins[row][col];
+        }
+        int maxCoins = coins[row][col] + Math.max(
+            dfs(row + 1, col, neutralizationsLeft),     
+            dfs(row, col + 1, neutralizationsLeft)       
+        );
+        if (coins[row][col] < 0 && neutralizationsLeft > 0) {
+            maxCoins = Math.max(maxCoins, Math.max(
+                dfs(row + 1, col, neutralizationsLeft - 1),    
+                dfs(row, col + 1, neutralizationsLeft - 1)       
+            ));
+        }
+        dp[row][col][neutralizationsLeft] = maxCoins;
+        return maxCoins;
+    }
+}
