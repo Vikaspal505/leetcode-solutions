@@ -1,0 +1,58 @@
+class Solution {
+    private Integer[][] dp;
+    private int[][] robotData;
+    private int[] walls;
+    private int robotCount;
+    public int maxWalls(int[] robots, int[] distance, int[] walls) {
+        robotCount = robots.length;
+        robotData = new int[robotCount][2];
+        for (int i = 0; i < robotCount; i++) {
+            robotData[i][0] = robots[i];
+            robotData[i][1] = distance[i];
+        }
+        Arrays.sort(robotData, Comparator.comparingInt(a -> a[0]));
+        Arrays.sort(walls);
+        this.walls = walls;
+        dp = new Integer[robotCount][2];
+        return dfs(robotCount - 1, 1);
+    }
+    private int dfs(int robotIndex, int nextRobotDirection) {
+        if (robotIndex < 0) {
+            return 0;
+        }
+        if (dp[robotIndex][nextRobotDirection] != null) {
+            return dp[robotIndex][nextRobotDirection];
+        }
+        int leftBoundary = robotData[robotIndex][0] - robotData[robotIndex][1];
+        if (robotIndex > 0) {
+            leftBoundary = Math.max(leftBoundary, robotData[robotIndex - 1][0] + 1);
+        }
+        int leftIndex = lowerBound(walls, leftBoundary);
+        int rightIndex = lowerBound(walls, robotData[robotIndex][0] + 1);
+        int wallsIfPushedLeft = dfs(robotIndex - 1, 0) + (rightIndex - leftIndex);
+        int rightBoundary = robotData[robotIndex][0] + robotData[robotIndex][1];
+        if (robotIndex + 1 < robotCount) {
+            if (nextRobotDirection == 0) {
+                rightBoundary = Math.min(rightBoundary, 
+                    robotData[robotIndex + 1][0] - robotData[robotIndex + 1][1] - 1);
+            } else {
+                rightBoundary = Math.min(rightBoundary, 
+                    robotData[robotIndex + 1][0] - 1);
+            }
+        }
+        leftIndex = lowerBound(walls, robotData[robotIndex][0]);
+        rightIndex = lowerBound(walls, rightBoundary + 1);
+        int wallsIfPushedRight = dfs(robotIndex - 1, 1) + (rightIndex - leftIndex);
+        int maxWalls = Math.max(wallsIfPushedLeft, wallsIfPushedRight);
+        dp[robotIndex][nextRobotDirection] = maxWalls;
+        return maxWalls;
+    }
+    private int lowerBound(int[] arr, int target) {
+        int index = Arrays.binarySearch(arr, target);
+      
+        if (index < 0) {
+            return -index - 1;
+        }
+        return index;
+    }
+}
