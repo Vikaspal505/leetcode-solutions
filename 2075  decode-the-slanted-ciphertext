@@ -1,0 +1,18 @@
+class Solution {
+    public String decodeCiphertext(String encodedText, int rows) {
+        StringBuilder result = new StringBuilder();
+        int columns = encodedText.length() / rows;
+        for (int startColumn = 0; startColumn < columns; ++startColumn) {
+            for (int row = 0, column = startColumn; 
+                 row < rows && column < columns; 
+                 ++row, ++column) {
+                int charPosition = row * columns + column;
+                result.append(encodedText.charAt(charPosition));
+            }
+        }
+        while (result.length() > 0 && result.charAt(result.length() - 1) == ' ') {
+            result.deleteCharAt(result.length() - 1);
+        }
+        return result.toString();
+    }
+}
