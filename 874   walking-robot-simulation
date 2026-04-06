@@ -1,0 +1,36 @@
+class Solution {
+    public int robotSim(int[] commands, int[][] obstacles) {
+        int[] directions = {0, 1, 0, -1, 0};
+        Set<Integer> obstacleSet = new HashSet<>(obstacles.length);
+        for (int[] obstacle : obstacles) {
+            obstacleSet.add(encodePosition(obstacle[0], obstacle[1]));
+        }
+        int maxDistanceSquared = 0;  
+        int directionIndex = 0;       
+        int currentX = 0;             
+        int currentY = 0;            
+        for (int command : commands) {
+            if (command == -2) {
+                directionIndex = (directionIndex + 3) % 4;
+            } else if (command == -1) {
+                directionIndex = (directionIndex + 1) % 4;
+            } else {
+                while (command-- > 0) {
+                    int nextX = currentX + directions[directionIndex];
+                    int nextY = currentY + directions[directionIndex + 1];
+                    if (obstacleSet.contains(encodePosition(nextX, nextY))) {
+                        break;  
+                    }
+                    currentX = nextX;
+                    currentY = nextY;
+                    maxDistanceSquared = Math.max(maxDistanceSquared, 
+                                                  currentX * currentX + currentY * currentY);
+                }
+            }
+        }
+        return maxDistanceSquared;
+    }
+    private int encodePosition(int x, int y) {
+        return x * 60010 + y;
+    }
+}
