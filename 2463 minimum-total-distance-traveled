@@ -1,0 +1,38 @@
+class Solution {
+    private long[][] dp;
+    private List<Integer> robotPositions;
+    private int[][] factoryData;
+    public long minimumTotalDistance(List<Integer> robot, int[][] factory) {
+        Collections.sort(robot);
+        Arrays.sort(factory, (a, b) -> Integer.compare(a[0], b[0]));
+        this.robotPositions = robot;
+        this.factoryData = factory;
+        this.dp = new long[robot.size()][factory.length];
+        return dfs(0, 0);
+    }
+    private long dfs(int robotIndex, int factoryIndex) {
+        if (robotIndex == robotPositions.size()) {
+            return 0;
+        }
+        if (factoryIndex == factoryData.length) {
+            return Long.MAX_VALUE / 1000; 
+        }
+        if (dp[robotIndex][factoryIndex] != 0) {
+            return dp[robotIndex][factoryIndex];
+        }
+        long minDistance = dfs(robotIndex, factoryIndex + 1);
+        long currentDistance = 0;
+        int factoryCapacity = factoryData[factoryIndex][1];
+        int factoryPosition = factoryData[factoryIndex][0];
+        for (int k = 0; k < factoryCapacity; k++) {
+            if (robotIndex + k >= robotPositions.size()) {
+                break;
+            }
+            currentDistance += Math.abs(robotPositions.get(robotIndex + k) - factoryPosition);
+            long remainingDistance = dfs(robotIndex + k + 1, factoryIndex + 1);
+            minDistance = Math.min(minDistance, currentDistance + remainingDistance);
+        }
+        dp[robotIndex][factoryIndex] = minDistance;
+        return minDistance;
+    }
+}
