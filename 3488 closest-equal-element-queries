@@ -1,0 +1,36 @@
+class Solution {
+    public List<Integer> solveQueries(int[] nums, int[] queries) {
+        int arrayLength = nums.length;
+        int doubledLength = arrayLength * 2;
+        int[] minDistances = new int[doubledLength];
+        Arrays.fill(minDistances, doubledLength);
+        Map<Integer, Integer> lastSeenPositions = new HashMap<>();
+        for (int i = 0; i < doubledLength; i++) {
+            int currentElement = nums[i % arrayLength];
+            if (lastSeenPositions.containsKey(currentElement)) {
+                int distanceToLeft = i - lastSeenPositions.get(currentElement);
+                minDistances[i] = Math.min(minDistances[i], distanceToLeft);
+            }
+            lastSeenPositions.put(currentElement, i);
+        }
+        Map<Integer, Integer> nextPositions = new HashMap<>();
+        for (int i = doubledLength - 1; i >= 0; i--) {
+            int currentElement = nums[i % arrayLength];
+            if (nextPositions.containsKey(currentElement)) {
+                int distanceToRight = nextPositions.get(currentElement) - i;
+                minDistances[i] = Math.min(minDistances[i], distanceToRight);
+            }
+            nextPositions.put(currentElement, i);
+        }
+        for (int i = 0; i < arrayLength; i++) {
+            minDistances[i] = Math.min(minDistances[i], minDistances[i + arrayLength]);
+        }
+        List<Integer> results = new ArrayList<>();
+        for (int queryIndex : queries) {
+            int distance = minDistances[queryIndex];
+            results.add(distance >= arrayLength ? -1 : distance);
+        }
+
+        return results;
+    }
+}
