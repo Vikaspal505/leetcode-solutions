@@ -1,0 +1,21 @@
+class Solution {
+    public List<String> twoEditWords(String[] queries, String[] dictionary) {
+        List<String> result = new ArrayList<>();
+        int stringLength = queries[0].length();
+        for (String queryString : queries) {
+            for (String dictionaryWord : dictionary) {
+                int differenceCount = 0;
+                for (int i = 0; i < stringLength; ++i) {
+                    if (queryString.charAt(i) != dictionaryWord.charAt(i)) {
+                        differenceCount++;
+                    }
+                }
+                if (differenceCount < 3) {
+                    result.add(queryString);
+                    break; 
+                }
+            }
+        }
+        return result;
+    }
+}
