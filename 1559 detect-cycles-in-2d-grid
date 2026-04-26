@@ -1,0 +1,43 @@
+class Solution {
+    public boolean containsCycle(char[][] grid) {
+        int rows = grid.length;
+        int cols = grid[0].length;
+        boolean[][] visited = new boolean[rows][cols];
+        final int[] directions = {-1, 0, 1, 0, -1};
+        for (int row = 0; row < rows; row++) {
+            for (int col = 0; col < cols; col++) {
+                if (!visited[row][col]) {
+                    Deque<int[]> queue = new ArrayDeque<>();
+                    queue.offer(new int[] {row, col, -1, -1});
+                    visited[row][col] = true;
+                  
+                    while (!queue.isEmpty()) {
+                        int[] current = queue.poll();
+                        int currentX = current[0];
+                        int currentY = current[1];
+                        int parentX = current[2];
+                        int parentY = current[3];
+                        for (int k = 0; k < 4; k++) {
+                            int nextX = currentX + directions[k];
+                            int nextY = currentY + directions[k + 1];
+                            if (nextX >= 0 && nextX < rows && nextY >= 0 && nextY < cols) {
+                              
+                                if (grid[nextX][nextY] != grid[currentX][currentY] || 
+                                    (nextX == parentX && nextY == parentY)) {
+                                    continue;
+                                    }
+                                if (visited[nextX][nextY]) {
+                                    return true;
+                                }
+                                queue.offer(new int[] {nextX, nextY, currentX, currentY});
+                                visited[nextX][nextY] = true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+      
+        return false;
+    }
+}
