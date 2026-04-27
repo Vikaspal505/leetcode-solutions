@@ -1,0 +1,75 @@
+	class Solution {
+
+	    private static final int[][][] moves = {
+
+	        {},
+
+	        {{0, -1}, {0, 1}},   // 1
+
+	        {{-1, 0}, {1, 0}},   // 2
+
+	        {{0, -1}, {1, 0}},   // 3
+
+	        {{0, 1}, {1, 0}},    // 4
+
+	        {{0, -1}, {-1, 0}},  // 5
+
+	        {{0, 1}, {-1, 0}}    // 6
+
+	    };
+
+	 
+
+	    public boolean hasValidPath(int[][] grid) {
+
+	        int m = grid.length, n = grid[0].length;
+
+	        boolean[][] visited = new boolean[m][n];
+
+	        Queue<int[]> queue = new LinkedList<>();
+
+	        queue.offer(new int[]{0, 0});
+
+	        visited[0][0] = true;
+
+	 
+
+	        while (!queue.isEmpty()) {
+
+	            int[] cur = queue.poll();
+
+	            int x = cur[0], y = cur[1];
+
+	            if (x == m - 1 && y == n - 1) return true;
+
+	            for (int[] move : moves[grid[x][y]]) {
+
+	                int nx = x + move[0], ny = y + move[1];
+
+	                if (nx >= 0 && nx < m && ny >= 0 && ny < n && !visited[nx][ny]) {
+
+	                    for (int[] back : moves[grid[nx][ny]]) {
+
+	                        if (nx + back[0] == x && ny + back[1] == y) {
+
+	                            visited[nx][ny] = true;
+
+	                            queue.offer(new int[]{nx, ny});
+
+	                            break;
+
+	                        }
+
+	                    }
+
+	                }
+
+	            }
+
+	        }
+
+	        return false;
+
+	    }
+
+	}
