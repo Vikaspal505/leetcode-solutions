@@ -1,0 +1,17 @@
+class Solution {
+    public int maxRotateFunction(int[] nums) {
+        int currentFunctionValue = 0;
+        int totalSum = 0;
+        int arrayLength = nums.length;
+        for (int i = 0; i < arrayLength; ++i) {
+            currentFunctionValue += i * nums[i];  
+            totalSum += nums[i];
+        }
+        int maxValue = currentFunctionValue;
+        for (int rotation = 1; rotation < arrayLength; ++rotation) {
+            currentFunctionValue = currentFunctionValue + totalSum - arrayLength * nums[arrayLength - rotation];
+            maxValue = Math.max(maxValue, currentFunctionValue);
+        }
+        return maxValue;
+    }
+}
