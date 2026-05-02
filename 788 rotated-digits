@@ -1,0 +1,36 @@
+class Solution {
+  
+    private int[] rotationMap = new int[] {0, 1, 5, -1, -1, 2, 9, -1, 8, 6};
+
+    public int rotatedDigits(int n) {
+        int goodNumberCount = 0;
+      
+        
+        for (int number = 1; number <= n; ++number) {
+            if (isGoodNumber(number)) {
+                ++goodNumberCount;
+            }
+        }
+      
+        return goodNumberCount;
+    }
+
+    private boolean isGoodNumber(int originalNumber) {
+        int rotatedNumber = 0;
+        int tempNumber = originalNumber;
+        int placeValue = 1;  
+      
+        while (tempNumber > 0) {
+            int currentDigit = tempNumber % 10;
+          
+            if (rotationMap[currentDigit] == -1) {
+                return false;  
+            }
+          
+            rotatedNumber = rotationMap[currentDigit] * placeValue + rotatedNumber;
+            placeValue *= 10;
+            tempNumber /= 10;
+        }
+        return originalNumber != rotatedNumber;
+    }
+}
