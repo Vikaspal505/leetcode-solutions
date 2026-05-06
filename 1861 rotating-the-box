@@ -1,0 +1,34 @@
+class Solution {
+    public char[][] rotateTheBox(char[][] box) {
+        int rows = box.length;
+        int cols = box[0].length;
+      
+        char[][] result = new char[cols][rows];
+      
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                result[j][rows - 1 - i] = box[i][j];
+            }
+        }
+        for (int col = 0; col < rows; col++) {
+           
+            Deque<Integer> emptyPositions = new ArrayDeque<>();
+          
+            for (int row = cols - 1; row >= 0; row--) {
+                if (result[row][col] == '*') {
+                    
+                    emptyPositions.clear();
+                } else if (result[row][col] == '.') {
+                    emptyPositions.offer(row);
+                } else if (result[row][col] == '#' && !emptyPositions.isEmpty()) {
+                    int lowestEmptyPosition = emptyPositions.pollFirst();
+                    result[lowestEmptyPosition][col] = '#';
+                    result[row][col] = '.';
+                    emptyPositions.offer(row);
+                }
+            }
+        }
+      
+        return result;
+    }
+}
