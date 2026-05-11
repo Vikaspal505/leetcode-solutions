@@ -1,0 +1,19 @@
+class Solution {
+    public int[] separateDigits(int[] nums) {
+        List<Integer> resultList = new ArrayList<>();
+        for (int number : nums) {
+            List<Integer> digitsOfCurrentNumber = new ArrayList<>();
+            while (number > 0) {
+                digitsOfCurrentNumber.add(number % 10);
+                number /= 10;
+            }
+            Collections.reverse(digitsOfCurrentNumber);
+            resultList.addAll(digitsOfCurrentNumber);
+        }
+        int[] resultArray = new int[resultList.size()];
+        for (int i = 0; i < resultArray.length; i++) {
+            resultArray[i] = resultList.get(i);
+        }
+        return resultArray;
+    }
+}
