@@ -1,0 +1,20 @@
+class Solution {
+    public int minimumEffort(int[][] tasks) {
+        Arrays.sort(tasks, (task1, task2) -> 
+            (task1[0] - task1[1]) - (task2[0] - task2[1])
+        );
+        int totalMinimumEffort = 0;  
+        int currentEffort = 0;
+        for (int[] task : tasks) {
+            int actualEffortNeeded = task[0];
+            int minimumEffortRequired = task[1]; 
+            if (currentEffort < minimumEffortRequired) {
+                int additionalEffortNeeded = minimumEffortRequired - currentEffort;
+                totalMinimumEffort += additionalEffortNeeded;
+                currentEffort = minimumEffortRequired;
+            }
+            currentEffort -= actualEffortNeeded;
+        }
+        return totalMinimumEffort;
+    }
+}
