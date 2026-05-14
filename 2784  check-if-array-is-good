@@ -1,0 +1,23 @@
+class Solution {
+    public boolean isGood(int[] nums) {
+        int n = nums.length - 1;
+      
+        int[] frequency = new int[201];
+      
+        for (int number : nums) {
+            frequency[number]++;
+        }
+      
+        if (frequency[n] != 2) {
+            return false;
+        }
+      
+        for (int i = 1; i < n; i++) {
+            if (frequency[i] != 1) {
+                return false;
+            }
+        }
+      
+        return true;
+    }
+}
