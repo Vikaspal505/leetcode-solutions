@@ -1,0 +1,26 @@
+class Solution {
+    public boolean canReach(int[] arr, int start) {
+        Deque<Integer> queue = new ArrayDeque<>();
+        queue.offer(start);
+      
+        while (!queue.isEmpty()) {
+            int currentIndex = queue.poll();
+          
+            if (arr[currentIndex] == 0) {
+                return true;
+            }
+          
+            int jumpDistance = arr[currentIndex];
+          
+            arr[currentIndex] = -1;
+          
+            for (int nextIndex : List.of(currentIndex + jumpDistance, currentIndex - jumpDistance)) {
+                if (nextIndex >= 0 && nextIndex < arr.length && arr[nextIndex] >= 0) {
+                    queue.offer(nextIndex);
+                }
+            }
+        }
+      
+        return false;
+    }
+}
