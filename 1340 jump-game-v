@@ -1,0 +1,46 @@
+class Solution {
+    private int arrayLength;
+    private int maxDistance;
+    private int[] heights;
+    private Integer[] memo; 
+
+    public int maxJumps(int[] arr, int d) {
+        arrayLength = arr.length;
+        this.maxDistance = d;
+        this.heights = arr;
+        memo = new Integer[arrayLength];
+      
+        int maxVisited = 1;
+      
+        for (int startIndex = 0; startIndex < arrayLength; startIndex++) {
+            maxVisited = Math.max(maxVisited, dfs(startIndex));
+        }
+      
+        return maxVisited;
+    }
+
+    private int dfs(int currentIndex) {
+        if (memo[currentIndex] != null) {
+            return memo[currentIndex];
+        }
+      
+        int maxJumpsFromHere = 1;
+      
+        for (int targetIndex = currentIndex - 1; targetIndex >= 0; targetIndex--) {
+            if (currentIndex - targetIndex > maxDistance || heights[targetIndex] >= heights[currentIndex]) {
+                break;
+            }
+            maxJumpsFromHere = Math.max(maxJumpsFromHere, 1 + dfs(targetIndex));
+        }
+      
+        for (int targetIndex = currentIndex + 1; targetIndex < arrayLength; targetIndex++) {
+            if (targetIndex - currentIndex > maxDistance || heights[targetIndex] >= heights[currentIndex]) {
+                break;
+            }
+            maxJumpsFromHere = Math.max(maxJumpsFromHere, 1 + dfs(targetIndex));
+        }
+      
+        memo[currentIndex] = maxJumpsFromHere;
+        return maxJumpsFromHere;
+    }
+}
