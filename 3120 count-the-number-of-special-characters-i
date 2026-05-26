@@ -1,0 +1,19 @@
+class Solution {
+    public int numberOfSpecialChars(String word) {
+        boolean[] characterPresence = new boolean['z' + 1];
+      
+        for (int i = 0; i < word.length(); i++) {
+            characterPresence[word.charAt(i)] = true;
+        }
+      
+        int specialCharCount = 0;
+      
+        for (int i = 0; i < 26; i++) {
+            if (characterPresence['a' + i] && characterPresence['A' + i]) {
+                specialCharCount++;
+            }
+        }
+      
+        return specialCharCount;
+    }
+}
