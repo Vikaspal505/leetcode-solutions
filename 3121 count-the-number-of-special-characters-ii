@@ -1,0 +1,24 @@
+class Solution {
+    public int numberOfSpecialChars(String word) {
+        int[] firstOccurrence = new int['z' + 1];
+        int[] lastOccurrence = new int['z' + 1];
+        for (int i = 1; i <= word.length(); i++) {
+            char currentChar = word.charAt(i - 1);
+            if (firstOccurrence[currentChar] == 0) {
+                firstOccurrence[currentChar] = i;
+            }
+            lastOccurrence[currentChar] = i;
+        }
+        int specialCharCount = 0;
+        for (int i = 0; i < 26; i++) {
+            char lowercaseLetter = (char) ('a' + i);
+            char uppercaseLetter = (char) ('A' + i);
+            if (lastOccurrence[lowercaseLetter] > 0 && 
+                firstOccurrence[uppercaseLetter] > 0 && 
+                lastOccurrence[lowercaseLetter] < firstOccurrence[uppercaseLetter]) {
+                specialCharCount++;
+            }
+        }
+        return specialCharCount;
+    }
+}
