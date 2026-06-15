@@ -1,0 +1,17 @@
+class Solution {
+    public ListNode deleteMiddle(ListNode head) {
+        ListNode dummyNode = new ListNode(0, head);
+      
+        ListNode slowPointer = dummyNode;
+        ListNode fastPointer = head;
+      
+        while (fastPointer != null && fastPointer.next != null) {
+            slowPointer = slowPointer.next;
+            fastPointer = fastPointer.next.next;
+        }
+      
+        slowPointer.next = slowPointer.next.next;
+      
+        return dummyNode.next;
+    }
+}
