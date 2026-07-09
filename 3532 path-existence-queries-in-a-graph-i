@@ -1,0 +1,50 @@
+class Solution {
+    public boolean[] pathExistenceQueries(int n, int[] nums, int maxDiff, int[][] queries) {
+        int[] parent = new int[n];
+        int[] size = new int[n];
+        for (int i = 0; i < n; i++) {
+            parent[i] = i;
+            size[i] = 1;
+        }
+
+        function find = new function() {
+            public int apply(int i) {
+                if (parent[i] == i) {
+                    return i;
+                }
+                parent[i] = apply(parent[i]);
+                return parent[i];
+            }
+        };
+
+        BiConsumer<Integer, Integer> union = (i, j) -> {
+            int root_i = find.apply(i);
+            int root_j = find.apply(j);
+            if (root_i != root_j) {
+                if (size[root_i] < size[root_j]) {
+                    int temp = root_i;
+                    root_i = root_j;
+                    root_j = temp;
+                }
+                parent[root_j] = root_i;
+                size[root_i] += size[root_j];
+            }
+        };
+
+        for (int i = 0; i < n - 1; i++) {
+            if (nums[i+1] - nums[i] <= maxDiff) {
+                union.accept(i, i+1);
+            }
+        }
+
+        boolean[] result = new boolean[queries.length];
+        for (int i = 0; i < queries.length; i++) {
+            result[i] = find.apply(queries[i][0]) == find.apply(queries[i][1]);
+        }
+        return result;
+    }
+
+    interface function {
+        int apply(int i);
+    }
+}
