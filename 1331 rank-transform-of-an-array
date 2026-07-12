@@ -1,0 +1,18 @@
+class Solution {
+    public int[] arrayRankTransform(int[] arr) {
+        int arrayLength = arr.length;
+        int[] sortedArray = arr.clone();
+        Arrays.sort(sortedArray);
+        int uniqueCount = 0;
+        for (int i = 0; i < arrayLength; ++i) {
+            if (i == 0 || sortedArray[i] != sortedArray[i - 1]) {
+                sortedArray[uniqueCount++] = sortedArray[i];
+            }
+        }
+        int[] result = new int[arrayLength];
+        for (int i = 0; i < arrayLength; ++i) {
+            result[i] = Arrays.binarySearch(sortedArray, 0, uniqueCount, arr[i]) + 1;
+        }
+        return result;
+    }
+}
