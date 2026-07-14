@@ -1,0 +1,62 @@
+class Solution {
+    static final int MOD = 1000000007;
+
+    public int subsequencePairCount(int[] nums) {
+        int n = nums.length;
+
+        int[][] dp = new int[201][201];
+
+        // no elements selected yet
+        dp[0][0] = 1;
+
+        for (int num : nums) {
+            int[][] next = new int[201][201];
+
+            for (int g1 = 0; g1 <= 200; g1++) {
+                for (int g2 = 0; g2 <= 200; g2++) {
+
+                    if (dp[g1][g2] == 0) continue;
+
+                    int val = dp[g1][g2];
+
+                    // ignore current number
+                    next[g1][g2] = (next[g1][g2] + val) % MOD;
+
+                    // put in first subsequence
+                    int ng1 = gcd(g1, num);
+                    next[ng1][g2] = (next[ng1][g2] + val) % MOD;
+
+                    // put in second subsequence
+                    int ng2 = gcd(g2, num);
+                    next[g1][ng2] = (next[g1][ng2] + val) % MOD;
+                }
+            }
+
+            dp = next;
+        }
+
+
+        long ans = 0;
+
+        // both subsequences must have same gcd and non-empty
+        for (int g = 1; g <= 200; g++) {
+            ans = (ans + dp[g][g]) % MOD;
+        }
+
+        return (int) ans;
+    }
+
+
+    private int gcd(int a, int b) {
+        if (a == 0) return b;
+        if (b == 0) return a;
+
+        while (b != 0) {
+            int temp = a % b;
+            a = b;
+            b = temp;
+        }
+
+        return a;
+    }
+}
