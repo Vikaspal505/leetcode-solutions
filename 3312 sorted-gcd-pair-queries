@@ -1,0 +1,62 @@
+import java.util.*;
+
+class Solution {
+
+    public int[] gcdValues(int[] nums, long[] queries) {
+        int max = Arrays.stream(nums).max().getAsInt();
+
+        // Frequency array
+        int[] freq = new int[max + 1];
+        for (int num : nums) {
+            freq[num]++;
+        }
+
+        // gcdCount[g] = number of pairs with gcd exactly = g
+        long[] gcdCount = new long[max + 1];
+
+        for (int g = max; g >= 1; g--) {
+            int count = 0;
+
+            // Count numbers divisible by g
+            for (int multiple = g; multiple <= max; multiple += g) {
+                count += freq[multiple];
+                gcdCount[g] -= gcdCount[multiple];
+            }
+
+            // Add total pairs
+            gcdCount[g] += (long) count * (count - 1) / 2;
+        }
+
+        // Prefix sum: pairs with gcd ≤ g
+        for (int i = 1; i <= max; i++) {
+            gcdCount[i] += gcdCount[i - 1];
+        }
+
+        // Answer queries
+        int[] ans = new int[queries.length];
+        for (int i = 0; i < queries.length; i++) {
+            ans[i] = lowerBound(gcdCount, queries[i]);
+        }
+
+        return ans;
+    }
+
+    // Find smallest index such that gcdCount[index] > target
+    private int lowerBound(long[] gcdCount, long target) {
+        int left = 1, right = gcdCount.length - 1;
+        int res = right;
+
+        while (left <= right) {
+            int mid = left + (right - left) / 2;
+
+            if (gcdCount[mid] > target) {
+                res = mid;
+                right = mid - 1;
+            } else {
+                left = mid + 1;
+            }
+        }
+
+        return res;
+    }
+}
