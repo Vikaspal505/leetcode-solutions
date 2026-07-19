@@ -1,0 +1,31 @@
+class Solution {
+    public String smallestSubsequence(String text) {
+        int[] charFrequency = new int[26];
+        for (char c : text.toCharArray()) {
+            charFrequency[c - 'a']++;
+        }
+      
+        boolean[] isInStack = new boolean[26];
+      
+        char[] stack = new char[text.length()];
+        int stackTop = -1;
+      
+        for (char currentChar : text.toCharArray()) {
+            charFrequency[currentChar - 'a']--;
+          
+            if (!isInStack[currentChar - 'a']) {
+                while (stackTop >= 0 && 
+                       currentChar < stack[stackTop] && 
+                       charFrequency[stack[stackTop] - 'a'] > 0) {
+                    isInStack[stack[stackTop] - 'a'] = false;
+                    stackTop--;
+                }
+              
+                stack[++stackTop] = currentChar;
+                isInStack[currentChar - 'a'] = true;
+            }
+        }
+      
+        return String.valueOf(stack, 0, stackTop + 1);
+    }
+}
