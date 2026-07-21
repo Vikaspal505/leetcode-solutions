@@ -1,0 +1,31 @@
+class Solution {
+    public int maxActiveSectionsAfterTrade(String s) {
+        int n = s.length();
+        int totalOnes = 0;  
+        int currentIndex = 0;
+        int previousZeroSegmentLength = Integer.MIN_VALUE;  
+        int maxZeroSegmentSum = 0;  
+        while (currentIndex < n) {
+            int segmentEnd = currentIndex + 1;
+            while (segmentEnd < n && s.charAt(segmentEnd) == s.charAt(currentIndex)) {
+                segmentEnd++;
+            }
+          
+            int currentSegmentLength = segmentEnd - currentIndex;
+          
+            if (s.charAt(currentIndex) == '1') {
+                totalOnes += currentSegmentLength;
+            } else {
+          
+                maxZeroSegmentSum = Math.max(maxZeroSegmentSum, 
+                                            previousZeroSegmentLength + currentSegmentLength);
+                previousZeroSegmentLength = currentSegmentLength;
+            }
+          
+            currentIndex = segmentEnd;
+        }
+
+        totalOnes += maxZeroSegmentSum;
+        return totalOnes;
+    }
+}
