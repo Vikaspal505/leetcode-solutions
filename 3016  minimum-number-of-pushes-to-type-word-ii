@@ -1,0 +1,21 @@
+class Solution {
+    public int minimumPushes(String word) {
+        int[] letterFrequency = new int[26];
+      
+        for (int i = 0; i < word.length(); i++) {
+            letterFrequency[word.charAt(i) - 'a']++;
+        }
+      
+        Arrays.sort(letterFrequency);
+      
+        int totalPushes = 0;
+      
+        for (int i = 0; i < 26; i++) {
+            int pushesPerLetter = (i / 8) + 1;
+            int frequency = letterFrequency[26 - i - 1];
+            totalPushes += pushesPerLetter * frequency;
+        }
+      
+        return totalPushes;
+    }
+}
