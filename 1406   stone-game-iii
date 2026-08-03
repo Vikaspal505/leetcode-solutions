@@ -1,0 +1,40 @@
+class Solution {
+    private int[] stoneValue;
+    private Integer[] memo;
+    private int n;
+
+ 
+    public String stoneGameIII(int[] stoneValue) {
+        this.n = stoneValue.length;
+        this.memo = new Integer[n];
+        this.stoneValue = stoneValue;
+      
+        int scoreDifference = dfs(0);
+      
+        if (scoreDifference == 0) {
+            return "Tie";
+        }
+        return scoreDifference > 0 ? "Alice" : "Bob";
+    }
+    private int dfs(int i) {
+        if (i >= n) {
+            return 0;
+        }
+      
+        if (memo[i] != null) {
+            return memo[i];
+        }
+      
+        int maxScoreDifference = Integer.MIN_VALUE;
+        int currentSum = 0;
+      
+        for (int j = 0; j < 3 && i + j < n; j++) {
+            currentSum += stoneValue[i + j];
+          
+            maxScoreDifference = Math.max(maxScoreDifference, currentSum - dfs(i + j + 1));
+        }
+      
+        memo[i] = maxScoreDifference;
+        return maxScoreDifference;
+    }
+}
