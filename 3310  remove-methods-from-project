@@ -1,0 +1,61 @@
+class Solution {
+    private boolean[] isSuspicious;
+    private boolean[] isVisited;
+    private List<Integer>[] undirectedGraph;
+    private List<Integer>[] directedGraph;
+
+    public List<Integer> remainingMethods(int n, int k, int[][] invocations) {
+        isSuspicious = new boolean[n];
+        isVisited = new boolean[n];
+        undirectedGraph = new List[n];
+        directedGraph = new List[n];
+      
+        Arrays.setAll(undirectedGraph, i -> new ArrayList<>());
+        Arrays.setAll(directedGraph, i -> new ArrayList<>());
+      
+        for (int[] invocation : invocations) {
+            int caller = invocation[0];
+            int callee = invocation[1];
+          
+            undirectedGraph[caller].add(callee);
+            undirectedGraph[callee].add(caller);
+          
+            directedGraph[caller].add(callee);
+        }
+        markSuspiciousFromSource(k);
+      
+        for (int method = 0; method < n; ++method) {
+            if (!isSuspicious[method] && !isVisited[method]) {
+                markConnectedAsSafe(method);
+            }
+        }
+      
+        List<Integer> remainingMethodsList = new ArrayList<>();
+        for (int method = 0; method < n; ++method) {
+            if (!isSuspicious[method]) {
+                remainingMethodsList.add(method);
+            }
+        }
+      
+        return remainingMethodsList;
+    }
+    private void markSuspiciousFromSource(int currentMethod) {
+        isSuspicious[currentMethod] = true;
+      
+        for (int calledMethod : directedGraph[currentMethod]) {
+            if (!isSuspicious[calledMethod]) {
+                markSuspiciousFromSource(calledMethod);
+            }
+        }
+    }
+    private void markConnectedAsSafe(int currentMethod) {
+        isVisited[currentMethod] = true;
+      
+        for (int connectedMethod : undirectedGraph[currentMethod]) {
+            if (!isVisited[connectedMethod]) {
+                isSuspicious[connectedMethod] = false;
+                markConnectedAsSafe(connectedMethod);
+            }
+        }
+    }
+}
