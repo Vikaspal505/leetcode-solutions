@@ -1,0 +1,16 @@
+class Solution {
+    public int smallestNumber(int n, int t) {
+        for (int currentNumber = n; ; currentNumber++) {
+            int digitProduct = 1;
+            int tempNumber = currentNumber;
+            while (tempNumber > 0) {
+                int lastDigit = tempNumber % 10; 
+                digitProduct *= lastDigit;         
+                tempNumber /= 10;                 
+            }
+            if (digitProduct % t == 0) {
+                return currentNumber;
+            }
+        }
+    }
+}
