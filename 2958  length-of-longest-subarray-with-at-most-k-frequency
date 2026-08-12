@@ -1,0 +1,16 @@
+class Solution {
+    public int maxSubarrayLength(int[] nums, int k) {
+        Map<Integer, Integer> frequencyMap = new HashMap<>();
+        int maxLength = 0;
+        int left = 0;
+        for (int right = 0; right < nums.length; right++) {
+            frequencyMap.merge(nums[right], 1, Integer::sum);
+            while (frequencyMap.get(nums[right]) > k) {
+                frequencyMap.merge(nums[left], -1, Integer::sum);
+                left++;
+            }
+            maxLength = Math.max(maxLength, right - left + 1);
+        }
+        return maxLength;
+    }
+}
