@@ -1,0 +1,37 @@
+class Solution {
+    private int[] numbers;
+
+    public int largestInteger(int[] nums, int k) {
+        this.numbers = nums;
+      
+        if (k == 1) {
+            Map<Integer, Integer> frequencyMap = new HashMap<>();
+            for (int number : nums) {
+                frequencyMap.merge(number, 1, Integer::sum);
+            }
+          
+            int maxUniqueNumber = -1;
+            for (Map.Entry<Integer, Integer> entry : frequencyMap.entrySet()) {
+                if (entry.getValue() == 1) {
+                    maxUniqueNumber = Math.max(maxUniqueNumber, entry.getKey());
+                }
+            }
+            return maxUniqueNumber;
+        }
+      
+        if (k == nums.length) {
+            return Arrays.stream(nums).max().getAsInt();
+        }
+      
+        return Math.max(checkIfUnique(0), checkIfUnique(nums.length - 1));
+    }
+
+    private int checkIfUnique(int targetIndex) {
+        for (int i = 0; i < numbers.length; i++) {
+            if (i != targetIndex && numbers[i] == numbers[targetIndex]) {
+                return -1; 
+            }
+        }
+        return numbers[targetIndex]; 
+    }
+}
