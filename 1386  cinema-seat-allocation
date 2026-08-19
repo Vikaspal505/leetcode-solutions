@@ -1,0 +1,30 @@
+class Solution {
+    public int maxNumberOfFamilies(int n, int[][] reservedSeats) {
+        Map<Integer, Integer> rowReservations = new HashMap<>();
+      
+        for (int[] reservation : reservedSeats) {
+            int row = reservation[0];
+            int seatNumber = reservation[1];
+            rowReservations.merge(row, 1 << (10 - seatNumber), (existing, newBit) -> existing | newBit);
+        }
+      
+        int leftGroupMask = 0b0111100000;
+
+        int rightGroupMask = 0b0000011110;
+        int middleGroupMask = 0b0001111000;
+        int[] groupMasks = {leftGroupMask, rightGroupMask, middleGroupMask};
+      
+        int totalFamilies = (n - rowReservations.size()) * 2;
+      
+        for (int reservedSeatsBitmask : rowReservations.values()) {
+            for (int groupMask : groupMasks) {
+                if ((reservedSeatsBitmask & groupMask) == 0) {
+                    reservedSeatsBitmask |= groupMask;
+                    totalFamilies++;
+                }
+            }
+        }
+      
+        return totalFamilies;
+    }
+}
