@@ -1,0 +1,57 @@
+import java.util.*;
+
+public class Solution {
+    public String lexGreaterPermutation(String s, String target) {
+        int n = s.length();
+        int[] baseCount = new int[26];
+        for (char c : s.toCharArray()) baseCount[c - 'a']++;
+
+        // Pass 1: find the largest feasible divergence index
+        int[] cnt = baseCount.clone();
+        int lastI = -1;
+        for (int i = 0; i < n; i++) {
+            int t = target.charAt(i) - 'a';
+
+            // is there a letter greater than target[i] currently available?
+            boolean hasGreater = false;
+            for (int c = t + 1; c < 26; c++) {
+                if (cnt[c] > 0) { hasGreater = true; break; }
+            }
+            if (hasGreater) lastI = i;
+
+            // try to consume target[i] exactly to extend the matching prefix
+            if (cnt[t] > 0) {
+                cnt[t]--;
+            } else {
+                break; // can't match target any further
+            }
+        }
+
+        if (lastI == -1) return "";
+
+        // Pass 2: reconstruct using divergence at lastI
+        int[] cnt2 = baseCount.clone();
+        for (int i = 0; i < lastI; i++) {
+            cnt2[target.charAt(i) - 'a']--;
+        }
+
+        int t = target.charAt(lastI) - 'a';
+        int chosen = -1;
+        for (int c = t + 1; c < 26; c++) {
+            if (cnt2[c] > 0) { chosen = c; break; }
+        }
+        cnt2[chosen]--;
+
+        StringBuilder result = new StringBuilder();
+        result.append(target, 0, lastI);
+        result.append((char) (chosen + 'a'));
+        for (int c = 0; c < 26; c++) {
+            while (cnt2[c] > 0) {
+                result.append((char) (c + 'a'));
+                cnt2[c]--;
+            }
+        }
+
+        return result.toString();
+    }
+}
