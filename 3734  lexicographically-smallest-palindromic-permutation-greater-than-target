@@ -1,0 +1,81 @@
+class Solution {
+    public String lexPalindromicPermutation(String s, String target) {
+        int n = s.length();
+        int[] freq = new int[26];
+        for (char ch : s.toCharArray()) freq[ch - 'a']++;
+
+        // Check palindrome feasibility
+        int oddCount = 0, oddChar = -1;
+        for (int c = 0; c < 26; c++) {
+            if (freq[c] % 2 != 0) { oddCount++; oddChar = c; }
+        }
+        if ((n % 2 == 0 && oddCount != 0) || (n % 2 == 1 && oddCount != 1)) {
+            return "";
+        }
+
+        int h = n / 2;
+        boolean hasMid = (n % 2 == 1);
+        char midChar = hasMid ? (char) ('a' + oddChar) : ' ';
+
+        int[] halfCounts = new int[26];
+        for (int c = 0; c < 26; c++) halfCounts[c] = freq[c] / 2;
+
+        int[] wc = halfCounts.clone();
+        int bestDivergeIdx = -1;
+        char bestDivergeChar = ' ';
+        int maxMatch = h;
+
+        for (int i = 0; i < h; i++) {
+            int tc = target.charAt(i) - 'a';
+            for (int c = tc + 1; c < 26; c++) {
+                if (wc[c] > 0) { bestDivergeIdx = i; bestDivergeChar = (char) ('a' + c); break; }
+            }
+            if (wc[tc] > 0) {
+                wc[tc]--;
+            } else {
+                maxMatch = i;
+                break;
+            }
+        }
+
+        // Tie branch: first half exactly matches target's first half
+        if (maxMatch == h) {
+            String H = target.substring(0, h);
+            String suffix = new StringBuilder(H).reverse().toString();
+            if (hasMid) {
+                char tAtH = target.charAt(h);
+                if (midChar > tAtH) {
+                    return H + midChar + suffix;
+                } else if (midChar == tAtH) {
+                    String targetSuffix = target.substring(h + 1);
+                    if (suffix.compareTo(targetSuffix) > 0) return H + midChar + suffix;
+                }
+            } else {
+                String targetSuffix = target.substring(h);
+                if (suffix.compareTo(targetSuffix) > 0) return H + suffix;
+            }
+        }
+
+        // Diverge branch: bump one character above target, fill rest ascending
+        if (bestDivergeIdx == -1) return "";
+
+        int i = bestDivergeIdx;
+        char chosenChar = bestDivergeChar;
+
+        int[] wc2 = halfCounts.clone();
+        for (int j = 0; j < i; j++) wc2[target.charAt(j) - 'a']--;
+        wc2[chosenChar - 'a']--;
+
+        StringBuilder Hsb = new StringBuilder();
+        Hsb.append(target, 0, i);
+        Hsb.append(chosenChar);
+        for (int c = 0; c < 26; c++) {
+            for (int k = 0; k < wc2[c]; k++) Hsb.append((char) ('a' + c));
+        }
+
+        String H = Hsb.toString();
+        String reversedH = new StringBuilder(H).reverse().toString();
+
+        return hasMid ? H + midChar + reversedH : H + reversedH;
+    }
+}
