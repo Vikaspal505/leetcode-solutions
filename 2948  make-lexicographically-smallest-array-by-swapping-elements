@@ -1,0 +1,32 @@
+class Solution {
+    public int[] lexicographicallySmallestArray(int[] nums, int limit) {
+        int n = nums.length;
+      
+        Integer[] indices = new Integer[n];
+        Arrays.setAll(indices, i -> i);
+      
+        Arrays.sort(indices, (i, j) -> nums[i] - nums[j]);
+      
+        int[] result = new int[n];
+      
+        int i = 0;
+        while (i < n) {
+            int groupEnd = i + 1;
+            while (groupEnd < n && nums[indices[groupEnd]] - nums[indices[groupEnd - 1]] <= limit) {
+                groupEnd++;
+            }
+          
+            Integer[] groupIndices = Arrays.copyOfRange(indices, i, groupEnd);
+          
+            Arrays.sort(groupIndices, (x, y) -> x - y);
+          
+            for (int k = i; k < groupEnd; k++) {
+                result[groupIndices[k - i]] = nums[indices[k]];
+            }
+          
+            i = groupEnd;
+        }
+      
+        return result;
+    }
+}
