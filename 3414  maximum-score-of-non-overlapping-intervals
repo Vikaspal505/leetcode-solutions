@@ -1,0 +1,69 @@
+class Solution {
+    public int[] maximumWeight(List<List<Integer>> intervals) {
+        
+        int n = intervals.size();
+        Integer[] order = new Integer[n];
+        for (int i = 0; i < n; i++) order[i] = i;
+        Arrays.sort(order, (a, b) -> intervals.get(a).get(1) - intervals.get(b).get(1));
+
+        int[] L = new int[n], R = new int[n], W = new int[n], idx = new int[n];
+        for (int i = 0; i < n; i++) {
+            int o = order[i];
+            List<Integer> cur = intervals.get(o);
+            L[i] = cur.get(0);
+            R[i] = cur.get(1);
+            W[i] = cur.get(2);
+            idx[i] = o;
+        }
+
+        long[][] score = new long[5][n + 1];
+        int[][][] picks = new int[5][n + 1][];
+        for (int k = 0; k <= 4; k++) picks[k][0] = new int[0];
+        for (int i = 0; i <= n; i++) picks[0][i] = new int[0];
+
+        for (int i = 1; i <= n; i++) {
+            int curL = L[i - 1], curW = W[i - 1], curIdx = idx[i - 1];
+            int j = lowerBound(R, i - 1, curL); // count of r < curL among first i-1
+
+            for (int k = 1; k <= 4; k++) {
+                long skipScore = score[k][i - 1];
+                int[] skipPicks = picks[k][i - 1];
+
+                long takeScore = score[k - 1][j] + curW;
+                int[] prev = picks[k - 1][j];
+                int[] takePicks = Arrays.copyOf(prev, prev.length + 1);
+                takePicks[prev.length] = curIdx;
+                Arrays.sort(takePicks);
+
+                if (isBetter(takeScore, takePicks, skipScore, skipPicks)) {
+                    score[k][i] = takeScore;
+                    picks[k][i] = takePicks;
+                } else {
+                    score[k][i] = skipScore;
+                    picks[k][i] = skipPicks;
+                }
+            }
+        }
+
+        return picks[4][n];
+    }
+
+    private boolean isBetter(long sA, int[] pA, long sB, int[] pB) {
+        if (sA != sB) return sA > sB;
+        int len = Math.min(pA.length, pB.length);
+        for (int i = 0; i < len; i++) {
+            if (pA[i] != pB[i]) return pA[i] < pB[i];
+        }
+        return pA.length < pB.length;
+    }
+
+    private int lowerBound(int[] r, int bound, int target) {
+        int lo = 0, hi = bound;
+        while (lo < hi) {
+            int mid = (lo + hi) >>> 1;
+            if (r[mid] < target) lo = mid + 1;
+            else hi = mid;
+        }
+        return lo;
+    }
+}
