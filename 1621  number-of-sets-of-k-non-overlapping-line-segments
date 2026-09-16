@@ -1,0 +1,34 @@
+class Solution {
+    private static final int MOD = (int) 1e9 + 7;
+
+    public int numberOfSets(int n, int k) {
+        int[][] dpNotEndingAtPoint = new int[n + 1][k + 1];
+      
+        int[][] dpEndingAtPoint = new int[n + 1][k + 1];
+      
+        dpNotEndingAtPoint[1][0] = 1;
+      
+        for (int currentPoint = 2; currentPoint <= n; ++currentPoint) {
+            for (int segmentCount = 0; segmentCount <= k; ++segmentCount) {
+                dpNotEndingAtPoint[currentPoint][segmentCount] = 
+                    (dpNotEndingAtPoint[currentPoint - 1][segmentCount] + 
+                     dpEndingAtPoint[currentPoint - 1][segmentCount]) % MOD;
+              
+                dpEndingAtPoint[currentPoint][segmentCount] = 
+                    dpEndingAtPoint[currentPoint - 1][segmentCount];
+              
+                if (segmentCount > 0) {
+                    dpEndingAtPoint[currentPoint][segmentCount] = 
+                        (dpEndingAtPoint[currentPoint][segmentCount] + 
+                         dpNotEndingAtPoint[currentPoint - 1][segmentCount - 1]) % MOD;
+                  
+                    dpEndingAtPoint[currentPoint][segmentCount] = 
+                        (dpEndingAtPoint[currentPoint][segmentCount] + 
+                         dpEndingAtPoint[currentPoint - 1][segmentCount - 1]) % MOD;
+                }
+            }
+        }
+      
+        return (dpNotEndingAtPoint[n][k] + dpEndingAtPoint[n][k]) % MOD;
+    }
+}
