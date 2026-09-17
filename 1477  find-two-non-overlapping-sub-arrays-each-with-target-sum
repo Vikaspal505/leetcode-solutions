@@ -1,0 +1,35 @@
+class Solution {
+    public int minSumOfLengths(int[] arr, int target) {
+        Map<Integer, Integer> prefixSumToIndex = new HashMap<>();
+        prefixSumToIndex.put(0, 0);
+        int n = arr.length;
+
+        int[] minLengthUpToIndex = new int[n + 1];
+
+        final int INFINITY = 1 << 30;
+        minLengthUpToIndex[0] = INFINITY; 
+
+        int prefixSum = 0;
+        int minTotalLength = INFINITY;
+
+        for (int i = 1; i <= n; ++i) {
+            int currentValue = arr[i - 1]; 
+            prefixSum += currentValue;
+
+            minLengthUpToIndex[i] = minLengthUpToIndex[i - 1];
+
+            if (prefixSumToIndex.containsKey(prefixSum - target)) {
+                int startIndex = prefixSumToIndex.get(prefixSum - target);
+                int currentSubarrayLength = i - startIndex;
+
+                minLengthUpToIndex[i] = Math.min(minLengthUpToIndex[i], currentSubarrayLength);
+
+                minTotalLength = Math.min(minTotalLength, minLengthUpToIndex[startIndex] + currentSubarrayLength);
+            }
+
+            prefixSumToIndex.put(prefixSum, i);
+        }
+
+        return minTotalLength > n ? -1 : minTotalLength;
+    }
+}
