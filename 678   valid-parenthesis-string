@@ -1,0 +1,34 @@
+class Solution {
+    
+    public boolean checkValidString(String s) {
+        int length = s.length();
+      
+        boolean[][] dp = new boolean[length][length];
+      
+        for (int i = 0; i < length; i++) {
+            dp[i][i] = s.charAt(i) == '*';
+        }
+      
+        for (int startIndex = length - 2; startIndex >= 0; startIndex--) {
+            for (int endIndex = startIndex + 1; endIndex < length; endIndex++) {
+                char startChar = s.charAt(startIndex);
+                char endChar = s.charAt(endIndex);
+              
+                boolean canFormPair = (startChar == '(' || startChar == '*') && 
+                                     (endChar == '*' || endChar == ')');
+              
+                boolean isValidPair = canFormPair && 
+                                    (startIndex + 1 == endIndex || dp[startIndex + 1][endIndex - 1]);
+              
+                dp[startIndex][endIndex] = isValidPair;
+              
+                for (int splitPoint = startIndex; splitPoint < endIndex && !dp[startIndex][endIndex]; splitPoint++) {
+                    dp[startIndex][endIndex] = dp[startIndex][splitPoint] && 
+                                               dp[splitPoint + 1][endIndex];
+                }
+            }
+        }
+      
+        return dp[0][length - 1];
+    }
+}
