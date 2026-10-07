@@ -1,0 +1,59 @@
+class Solution {
+    private String inputString;
+    private int stringLength;
+    private Set<String> validResults = new HashSet<>();
+
+    public List<String> removeInvalidParentheses(String s) {
+        this.inputString = s;
+        this.stringLength = s.length();
+      
+        int leftToRemove = 0;
+        int rightToRemove = 0;
+      
+        for (char character : s.toCharArray()) {
+            if (character == '(') {
+                leftToRemove++;
+            } else if (character == ')') {
+                if (leftToRemove > 0) {
+                    leftToRemove--;
+                } else {
+                    rightToRemove++;
+                }
+            }
+        }
+      
+        dfs(0, leftToRemove, rightToRemove, 0, 0, "");
+      
+        return new ArrayList<>(validResults);
+    }
+
+    private void dfs(int index, int leftToRemove, int rightToRemove, 
+                     int leftCount, int rightCount, String currentString) {
+        if (index == stringLength) {
+            if (leftToRemove == 0 && rightToRemove == 0) {
+                validResults.add(currentString);
+            }
+            return;
+        }
+      
+        if (stringLength - index < leftToRemove + rightToRemove || leftCount < rightCount) {
+            return;
+        }
+      
+        char currentChar = inputString.charAt(index);
+      
+        if (currentChar == '(' && leftToRemove > 0) {
+            dfs(index + 1, leftToRemove - 1, rightToRemove, leftCount, rightCount, currentString);
+        }
+        if (currentChar == ')' && rightToRemove > 0) {
+            dfs(index + 1, leftToRemove, rightToRemove - 1, leftCount, rightCount, currentString);
+        }
+      
+        int leftIncrement = (currentChar == '(') ? 1 : 0;
+        int rightIncrement = (currentChar == ')') ? 1 : 0;
+      
+        dfs(index + 1, leftToRemove, rightToRemove, 
+            leftCount + leftIncrement, rightCount + rightIncrement, 
+            currentString + currentChar);
+    }
+}
