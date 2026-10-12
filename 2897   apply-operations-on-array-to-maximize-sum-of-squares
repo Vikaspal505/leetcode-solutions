@@ -1,0 +1,31 @@
+class Solution {
+    public int maxSum(List<Integer> nums, int k) {
+        final int MOD = (int) 1e9 + 7;
+      
+        int[] bitCount = new int[31];
+      
+        for (int number : nums) {
+            for (int bitPosition = 0; bitPosition < 31; bitPosition++) {
+                if ((number >> bitPosition & 1) == 1) {
+                    bitCount[bitPosition]++;
+                }
+            }
+        }
+      
+        long sumOfSquares = 0;
+      
+        while (k-- > 0) {
+            int constructedNumber = 0;
+          
+            for (int bitPosition = 0; bitPosition < 31; bitPosition++) {
+                if (bitCount[bitPosition] > 0) {
+                    constructedNumber |= 1 << bitPosition;
+                    bitCount[bitPosition]--;
+                }
+            }
+            sumOfSquares = (sumOfSquares + 1L * constructedNumber * constructedNumber) % MOD;
+        }
+      
+        return (int) sumOfSquares;
+    }
+}
