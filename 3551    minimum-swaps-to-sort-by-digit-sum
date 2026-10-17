@@ -1,0 +1,47 @@
+class Solution {
+    public int minSwaps(int[] nums) {
+        int arrayLength = nums.length;
+      
+        int[][] digitSumValuePairs = new int[arrayLength][2];
+        for (int i = 0; i < arrayLength; i++) {
+            digitSumValuePairs[i][0] = f(nums[i]); 
+            digitSumValuePairs[i][1] = nums[i];     
+        }
+      
+        Arrays.sort(digitSumValuePairs, (a, b) -> {
+            if (a[0] != b[0]) {
+                return Integer.compare(a[0], b[0]);  
+            }
+            return Integer.compare(a[1], b[1]);      
+        });
+      
+        Map<Integer, Integer> valueToTargetPosition = new HashMap<>();
+        for (int i = 0; i < arrayLength; i++) {
+            valueToTargetPosition.put(digitSumValuePairs[i][1], i);
+        }
+      
+        boolean[] visited = new boolean[arrayLength];
+      
+        int numberOfCycles = 0;
+        for (int i = 0; i < arrayLength; i++) {
+            if (!visited[i]) {
+                numberOfCycles++;
+              
+                int currentPosition = i;
+                while (!visited[currentPosition]) {
+                    visited[currentPosition] = true;
+                    currentPosition = valueToTargetPosition.get(nums[currentPosition]);
+                }
+            }
+        }
+        return arrayLength - numberOfCycles;
+    }
+    private int f(int x) {
+        int digitSum = 0;
+        while (x != 0) {
+            digitSum += x % 10;  
+            x /= 10;             
+        }
+        return digitSum;
+    }
+}
