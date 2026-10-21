@@ -1,0 +1,39 @@
+class Solution {
+    public int minOperations(String s) {
+        char[] chars = s.toCharArray();
+        int length = chars.length;
+
+        boolean isSorted = true;
+
+        char minChar = chars[0];
+        char maxChar = chars[0];
+
+        for (int i = 1; i < length; ++i) {
+            minChar = (char) Math.min(minChar, chars[i]);
+            maxChar = (char) Math.max(maxChar, chars[i]);
+            if (chars[i] < chars[i - 1]) {
+                isSorted = false;
+            }
+        }
+
+        if (isSorted) {
+            return 0;
+        }
+
+        if (length == 2) {
+            return -1;
+        }
+
+        if (chars[0] == minChar || chars[length - 1] == maxChar) {
+            return 1;
+        }
+
+        for (int i = 1; i < length - 1; ++i) {
+            if (chars[i] == minChar || chars[i] == maxChar) {
+                return 2;
+            }
+        }
+
+        return 3;
+    }
+}
