@@ -1,0 +1,45 @@
+class Solution {
+
+    public int minOperations(int[] nums) {
+        int n = nums.length;
+
+        int zeroIndex = findZeroIndex(nums);
+        int answer = Integer.MAX_VALUE;
+
+        if (isNonDecreasing(nums, zeroIndex, 1)) {
+            answer = Math.min(answer, zeroIndex);
+            answer = Math.min(answer, n - zeroIndex + 2);
+        }
+
+        if (isNonDecreasing(nums, zeroIndex, -1)) {
+            answer = Math.min(answer, zeroIndex + 2);
+            answer = Math.min(answer, n - zeroIndex);
+        }
+
+        return answer == Integer.MAX_VALUE ? -1 : answer;
+    }
+
+    private int findZeroIndex(int[] nums) {
+        for (int i = 0; i < nums.length; i++) {
+            if (nums[i] == 0) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    private boolean isNonDecreasing(int[] nums, int start, int step) {
+        int n = nums.length;
+
+        for (int i = 1; i < n; i++) {
+            int prev = (start + (i - 1) * step + n) % n;
+            int curr = (start + i * step + n) % n;
+
+            if (nums[prev] > nums[curr]) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+}
