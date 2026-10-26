@@ -1,0 +1,49 @@
+class Solution {
+    private int rows;
+    private int cols;
+    private int[][] grid;
+  
+    private final int[] directions = {-1, 0, 1, 0, -1};
+
+    public int countIslands(int[][] grid, int k) {
+        this.rows = grid.length;
+        this.cols = grid[0].length;
+        this.grid = grid;
+      
+        int islandCount = 0;
+      
+        for (int row = 0; row < rows; row++) {
+            for (int col = 0; col < cols; col++) {
+                if (grid[row][col] > 0) {
+                    long islandSum = dfs(row, col);
+                    if (islandSum % k == 0) {
+                        islandCount++;
+                    }
+                }
+            }
+        }
+      
+        return islandCount;
+    }
+
+  
+    private long dfs(int row, int col) {
+        long sum = grid[row][col];
+      
+        grid[row][col] = 0;
+      
+        for (int dir = 0; dir < 4; dir++) {
+            int nextRow = row + directions[dir];
+            int nextCol = col + directions[dir + 1];
+          
+            if (nextRow >= 0 && nextRow < rows && 
+                nextCol >= 0 && nextCol < cols && 
+                grid[nextRow][nextCol] > 0) {
+                // Recursively explore and add to sum
+                sum += dfs(nextRow, nextCol);
+            }
+        }
+      
+        return sum;
+    }
+}
