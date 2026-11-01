@@ -1,0 +1,8 @@
+class Solution {
+    public int minMoves(int[] nums) {
+        int sum = Arrays.stream(nums).sum();
+        int minValue = Arrays.stream(nums).min().getAsInt();
+        int minMoves = sum - minValue * nums.length;
+        return minMoves;
+    }
+}
