@@ -1,0 +1,75 @@
+import java.util.*;
+
+class Solution {
+    public long minOperations(int[] nums, int x, int k) {
+        int n = nums.length;
+        long[] cost = windowCosts(nums, x);
+        long INF = Long.MAX_VALUE / 4;
+
+        long[][] dp = new long[k + 1][n + 1];
+        for (int j = 1; j <= k; j++) Arrays.fill(dp[j], INF);
+
+        for (int j = 1; j <= k; j++) {
+            for (int i = 1; i <= n; i++) {
+                dp[j][i] = dp[j][i - 1];
+                if (i >= x && dp[j - 1][i - x] < INF) {
+                    dp[j][i] = Math.min(dp[j][i], dp[j - 1][i - x] + cost[i - 1]);
+                }
+            }
+        }
+        return dp[k][n];
+    }
+
+    private long[] windowCosts(int[] nums, int x) {
+        int n = nums.length;
+        long[] cost = new long[n];
+        TreeMap<Integer, Integer> smallerHalf = new TreeMap<>();
+        TreeMap<Integer, Integer> largerHalf = new TreeMap<>();
+        long smallerSum = 0, largerSum = 0;
+        int smallerCount = 0, largerCount = 0;
+
+        for (int i = 0; i < n; i++) {
+            smallerHalf.merge(nums[i], 1, Integer::sum);
+            smallerSum += nums[i];
+            smallerCount++;
+
+            int m = smallerHalf.lastKey();
+            if (smallerHalf.merge(m, -1, Integer::sum) == 0) smallerHalf.remove(m);
+            smallerSum -= m;
+            smallerCount--;
+
+            largerHalf.merge(m, 1, Integer::sum);
+            largerSum += m;
+            largerCount++;
+
+            if (largerCount - smallerCount > 1) {
+                int f = largerHalf.firstKey();
+                if (largerHalf.merge(f, -1, Integer::sum) == 0) largerHalf.remove(f);
+                largerSum -= f;
+                largerCount--;
+
+                smallerHalf.merge(f, 1, Integer::sum);
+                smallerSum += f;
+                smallerCount++;
+            }
+
+            if (i >= x - 1) {
+                int median = largerHalf.firstKey();
+                cost[i] = largerSum - (long) median * largerCount
+                        + (long) median * smallerCount - smallerSum;
+
+                int rem = nums[i - x + 1];
+                if (largerHalf.containsKey(rem)) {
+                    if (largerHalf.merge(rem, -1, Integer::sum) == 0) largerHalf.remove(rem);
+                    largerSum -= rem;
+                    largerCount--;
+                } else {
+                    if (smallerHalf.merge(rem, -1, Integer::sum) == 0) smallerHalf.remove(rem);
+                    smallerSum -= rem;
+                    smallerCount--;
+                }
+            }
+        }
+        return cost;
+    }
+}
