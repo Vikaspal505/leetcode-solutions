@@ -1,0 +1,46 @@
+class Solution {
+    public int[] assignTasks(int[] servers, int[] tasks) {
+        int numServers = servers.length;
+        PriorityQueue<int[]> idleServers = new PriorityQueue<>((a, b) -> {
+            if (a[0] != b[0]) {
+                return a[0] - b[0];  
+            }
+            return a[1] - b[1];  
+        });
+        PriorityQueue<int[]> busyServers = new PriorityQueue<>((a, b) -> {
+            if (a[0] != b[0]) {
+                return a[0] - b[0]; 
+            }
+            if (a[1] != b[1]) {
+                return a[1] - b[1]; 
+            }
+            return a[2] - b[2]; 
+        });
+      
+        for (int i = 0; i < numServers; i++) {
+            idleServers.offer(new int[] {servers[i], i});
+        }
+      
+        int numTasks = tasks.length;
+        int[] result = new int[numTasks];
+        for (int taskIndex = 0; taskIndex < numTasks; taskIndex++) {
+            int taskDuration = tasks[taskIndex];
+            while (!busyServers.isEmpty() && busyServers.peek()[0] <= taskIndex) {
+                int[] freedServer = busyServers.poll();
+                idleServers.offer(new int[] {freedServer[1], freedServer[2]});
+            }
+            if (!idleServers.isEmpty()) {
+                int serverIndex = idleServers.poll()[1];
+                result[taskIndex] = serverIndex;
+                busyServers.offer(new int[] {taskIndex + taskDuration, servers[serverIndex], serverIndex});
+            } else {
+                int[] earliestFreeServer = busyServers.poll();
+                int serverIndex = earliestFreeServer[2];
+                result[taskIndex] = serverIndex;
+                busyServers.offer(new int[] {earliestFreeServer[0] + taskDuration, earliestFreeServer[1], serverIndex});
+            }
+        }
+      
+        return result;
+    }
+}
