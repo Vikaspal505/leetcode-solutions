@@ -1,0 +1,23 @@
+class Solution {
+   
+    public String digitSum(String s, int k) {
+        while (s.length() > k) {
+            int stringLength = s.length();
+            StringBuilder resultBuilder = new StringBuilder();
+          
+            for (int startIndex = 0; startIndex < stringLength; startIndex += k) {
+                int groupSum = 0;
+              
+                for (int currentIndex = startIndex; currentIndex < Math.min(startIndex + k, stringLength); currentIndex++) {
+                    groupSum += s.charAt(currentIndex) - '0';
+                }
+              
+                resultBuilder.append(groupSum);
+            }
+          
+            s = resultBuilder.toString();
+        }
+      
+        return s;
+    }
+}
