@@ -1,0 +1,56 @@
+class Solution {
+    public int minimumChanges(String s, int k) {
+        int stringLength = s.length();
+      
+        int[][] minChanges = new int[stringLength + 1][stringLength + 1];
+      
+        int[][] dp = new int[stringLength + 1][k + 1];
+      
+        final int INFINITY = 1 << 30;
+      
+        for (int i = 0; i <= stringLength; ++i) {
+            Arrays.fill(minChanges[i], INFINITY);
+            Arrays.fill(dp[i], INFINITY);
+        }
+      
+        for (int startIdx = 1; startIdx <= stringLength; ++startIdx) {
+            for (int endIdx = startIdx; endIdx <= stringLength; ++endIdx) {
+                int substringLength = endIdx - startIdx + 1;
+              
+                for (int divisor = 1; divisor < substringLength; ++divisor) {
+                    if (substringLength % divisor == 0) {
+                        int changesNeeded = 0;
+                      
+                        for (int leftPos = 0; leftPos < substringLength; ++leftPos) {
+                            int rightPos = (substringLength / divisor - 1 - leftPos / divisor) * divisor + leftPos % divisor;
+                          
+                            if (leftPos >= rightPos) {
+                                break;
+                            }
+                          
+                            if (s.charAt(startIdx - 1 + leftPos) != s.charAt(startIdx - 1 + rightPos)) {
+                                ++changesNeeded;
+                            }
+                        }
+                      
+                        minChanges[startIdx][endIdx] = Math.min(minChanges[startIdx][endIdx], changesNeeded);
+                    }
+                }
+            }
+        
+        }
+        dp[0][0] = 0;
+      
+        for (int charCount = 1; charCount <= stringLength; ++charCount) {
+            for (int partCount = 1; partCount <= k; ++partCount) {
+                for (int prevPartitionEnd = 0; prevPartitionEnd < charCount - 1; ++prevPartitionEnd) {
+                    dp[charCount][partCount] = Math.min(
+                        dp[charCount][partCount], 
+                        dp[prevPartitionEnd][partCount - 1] + minChanges[prevPartitionEnd + 1][charCount]
+                    );
+                }
+            }
+        }
+        return dp[stringLength][k];
+    }
+}
