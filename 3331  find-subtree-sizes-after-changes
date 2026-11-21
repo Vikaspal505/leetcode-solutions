@@ -1,0 +1,38 @@
+class Solution {
+    private List<Integer>[] adjacencyList;  
+    private List<Integer>[] charToNodeStack; 
+    private char[] characters; 
+    private int[] subtreeSizes; 
+  
+    public int[] findSubtreeSizes(int[] parent, String s) {
+        int nodeCount = s.length();
+      
+        adjacencyList = new List[nodeCount];
+        charToNodeStack = new List[26];  
+        this.characters = s.toCharArray();
+        Arrays.setAll(adjacencyList, index -> new ArrayList<>());
+        Arrays.setAll(charToNodeStack, index -> new ArrayList<>());
+        for (int childNode = 1; childNode < nodeCount; ++childNode) {
+            adjacencyList[parent[childNode]].add(childNode);
+        }
+        subtreeSizes = new int[nodeCount];
+        dfs(0, -1);  
+      
+        return subtreeSizes;
+    }
+    private void dfs(int currentNode, int parentNode) {
+        subtreeSizes[currentNode] = 1;
+        int charIndex = characters[currentNode] - 'a';
+        charToNodeStack[charIndex].add(currentNode);
+        for (int childNode : adjacencyList[currentNode]) {
+            dfs(childNode, currentNode);
+        }
+        int closestAncestorWithSameChar = charToNodeStack[charIndex].size() > 1 ? 
+            charToNodeStack[charIndex].get(charToNodeStack[charIndex].size() - 2) : 
+            parentNode;
+        if (closestAncestorWithSameChar >= 0) {
+            subtreeSizes[closestAncestorWithSameChar] += subtreeSizes[currentNode];
+        }
+        charToNodeStack[charIndex].remove(charToNodeStack[charIndex].size() - 1);
+    }
+}
